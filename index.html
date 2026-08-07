@@ -241,7 +241,10 @@ const cities = {
   "Bali": [-8.6500, 115.2167],
   "Surabaya": [-7.2575, 112.7521],
   "Bandung": [-6.9175, 107.6191],
-  "Medan": [3.1957, 98.6722]
+  "Medan": [3.1957, 98.6722],
+  
+  // France (1 city)
+  "Paris": [48.8566, 2.3522]
 };
 
 const countryMap = {
@@ -309,7 +312,10 @@ const countryMap = {
   "Bali": "Indonesia",
   "Surabaya": "Indonesia",
   "Bandung": "Indonesia",
-  "Medan": "Indonesia"
+  "Medan": "Indonesia",
+  
+  // France
+  "Paris": "France"
 };
 
 function getCitiesOptions() {
@@ -399,12 +405,13 @@ function getMeetingDates() {
   return meetingDates;
 }
 
-function initMap() {
-  map = L.map('map').setView([16, 106], 6);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 10,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
+function getOffsetCoordinates(lat, lng, index = 0) {
+  // Crée un petit décalage autour du point pour éviter que les marqueurs se chevauchent
+  const radius = 0.015; // ~1.5km de décalage max
+  const angle = (index * 360 / 3) * Math.PI / 180; // Répartir en 3 direction au max
+  const offsetLat = lat + radius * Math.cos(angle);
+  const offsetLng = lng + radius * Math.sin(angle);
+  return [offsetLat, offsetLng];
 }
 
 function load() {
@@ -1042,7 +1049,10 @@ function renderMap() {
         
         markersByCity[cityKey]++;
         
-        const marker = L.circleMarker([lat, lng], {
+        // Décaler légèrement le marqueur pour éviter les chevauchements
+        const [offsetLat, offsetLng] = getOffsetCoordinates(lat, lng, markersByCity[cityKey] - 1);
+        
+        const marker = L.circleMarker([offsetLat, offsetLng], {
           radius: 8,
           fillColor: f.color,
           color: f.color,
