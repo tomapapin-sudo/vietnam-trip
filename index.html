@@ -157,12 +157,10 @@ textarea { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius:
 let map, friends = [], currentDate = '2027-03-01', editId = null, mapMarkers = [];
 let db = null; // Firebase Realtime Database reference
 
-// ⚠️ À REMPLIR: Tu dois créer un projet Firebase gratuit et ajouter ta config ici
-// Instructions: https://console.firebase.google.com → Créer un projet → Realtime Database → Copier ta config
 const firebaseConfig = {
   apiKey: "AIzaSyDHdtj7SnBY6IT1xHVtpvCMM3o6F5lMx3k",
   authDomain: "vietnam-trip-461d3.firebaseapp.com",
-  databaseURL: "https://vietnam-trip-461d3-default-rtdb.firebaseio.com",
+  databaseURL: "https://vietnam-trip-461d3-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "vietnam-trip-461d3",
   storageBucket: "vietnam-trip-461d3.firebasestorage.app",
   messagingSenderId: "753354584980",
@@ -243,10 +241,7 @@ const cities = {
   "Bali": [-8.6500, 115.2167],
   "Surabaya": [-7.2575, 112.7521],
   "Bandung": [-6.9175, 107.6191],
-  "Medan": [3.1957, 98.6722],
-  
-  // France (1 city)
-  "Paris": [48.8566, 2.3522]
+  "Medan": [3.1957, 98.6722]
 };
 
 const countryMap = {
@@ -314,10 +309,7 @@ const countryMap = {
   "Bali": "Indonesia",
   "Surabaya": "Indonesia",
   "Bandung": "Indonesia",
-  "Medan": "Indonesia",
-  
-  // France
-  "Paris": "France"
+  "Medan": "Indonesia"
 };
 
 function getCitiesOptions() {
@@ -413,15 +405,6 @@ function initMap() {
     maxZoom: 10,
     attribution: '© OpenStreetMap'
   }).addTo(map);
-}
-
-function getOffsetCoordinates(lat, lng, index = 0) {
-  // Crée un petit décalage autour du point pour éviter que les marqueurs se chevauchent
-  const radius = 0.015; // ~1.5km de décalage max
-  const angle = (index * 360 / 3) * Math.PI / 180; // Répartir en 3 direction au max
-  const offsetLat = lat + radius * Math.cos(angle);
-  const offsetLng = lng + radius * Math.sin(angle);
-  return [offsetLat, offsetLng];
 }
 
 function load() {
@@ -1059,10 +1042,7 @@ function renderMap() {
         
         markersByCity[cityKey]++;
         
-        // Décaler légèrement le marqueur pour éviter les chevauchements
-        const [offsetLat, offsetLng] = getOffsetCoordinates(lat, lng, markersByCity[cityKey] - 1);
-        
-        const marker = L.circleMarker([offsetLat, offsetLng], {
+        const marker = L.circleMarker([lat, lng], {
           radius: 8,
           fillColor: f.color,
           color: f.color,
